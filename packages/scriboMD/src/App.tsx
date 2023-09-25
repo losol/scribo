@@ -7,7 +7,10 @@ function App() {
   return (
     <div className='App'>
       <header className='App-header'>
-        <MarkdownEditor />
+        <MarkdownEditor
+          onContentChanged={(content) => console.log(content)}
+          initialContent='**Hello** _world_!'
+        />
       </header>
     </div>
   );
