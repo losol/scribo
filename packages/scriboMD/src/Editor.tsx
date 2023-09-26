@@ -15,8 +15,17 @@ import { CAN_USE_DOM } from './utils/environment';
 import ToolbarPlugin from './plugins/ToolbarPlugin';
 import ContentEditable from './ui/ContentEditable';
 import Placeholder from './ui/Placeholder';
+import {
+  LexicalComposer,
+  InitialConfigType,
+} from '@lexical/react/LexicalComposer';
 
-export default function Editor(): JSX.Element {
+interface EditorProps {
+  initialContent?: string;
+  onContentChanged?: (markdown: string) => void;
+}
+
+export default function Editor(props: EditorProps): JSX.Element {
   const isEditable = useLexicalEditable();
   const text = 'Enter some rich text...';
   const placeholder = <Placeholder>{text}</Placeholder>;
@@ -51,19 +60,21 @@ export default function Editor(): JSX.Element {
 
   return (
     <>
-      <ToolbarPlugin setIsLinkEditMode={setIsLinkEditMode} />
-      <div className='editor-container rich-text'>
-        <RichTextPlugin
-          contentEditable={
-            <div className='editor-scroller'>
-              <div className='editor' ref={onRef}>
-                <ContentEditable />
+      <div className='editor-shell'>
+        <ToolbarPlugin setIsLinkEditMode={setIsLinkEditMode} />
+        <div className='editor-container rich-text'>
+          <RichTextPlugin
+            contentEditable={
+              <div className='editor-scroller'>
+                <div className='editor' ref={onRef}>
+                  <ContentEditable />
+                </div>
               </div>
-            </div>
-          }
-          placeholder={placeholder}
-          ErrorBoundary={LexicalErrorBoundary}
-        />
+            }
+            placeholder={placeholder}
+            ErrorBoundary={LexicalErrorBoundary}
+          />
+        </div>
       </div>
     </>
   );
