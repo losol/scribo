@@ -12,66 +12,32 @@ import { ContentEditable } from '@lexical/react/LexicalContentEditable';
 import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import LexicalErrorBoundary from '@lexical/react/LexicalErrorBoundary';
+import ToolbarPlugin from './plugins/ToolbarPlugin';
+import MarkdownEditorTheme from './themes/MarkdownEditorTheme';
+import Editor from './Editor';
 
 interface MarkdownEditorProps {
   initialContent?: string;
   onContentChanged: (markdown: string) => void;
 }
 
-const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
-  initialContent,
-  onContentChanged,
-}) => {
-  const lexicalConfig: InitialConfigType = {
-    namespace: 'MarkdownEditor',
-    onError: (e) => {
-      console.log('ERROR:', e);
+const MarkdownEditor: React.FC<MarkdownEditorProps> = () => {
+  const [isLinkEditMode, setIsLinkEditMode] = React.useState(false);
+
+  const initialConfig = {
+    namespace: 'Playground',
+    onError: (error: Error) => {
+      throw error;
     },
+    theme: MarkdownEditorTheme,
   };
 
-  const RichContent = useMemo(() => {
-    return (
-      <ContentEditable
-        style={{
-          position: 'relative',
-          width: '100%',
-          maxWidth: '100%',
-          padding: '10px',
-        }}
-      />
-    );
-  }, []);
-
-  const Placeholder = useMemo(() => {
-    return (
-      <div
-        style={{
-          // position: 'absolute',
-          top: '10px',
-        }}
-      >
-        {initialContent || 'Type something...'}
-      </div>
-    );
-  }, [initialContent]);
-
   return (
-    <div style={{ padding: '20px' }}>
-      <LexicalComposer initialConfig={lexicalConfig}>
-        <RichTextPlugin
-          contentEditable={RichContent}
-          placeholder={Placeholder}
-          ErrorBoundary={LexicalErrorBoundary}
-        />
-        <OnChangePlugin
-          onChange={(editorState) => {
-            editorState.read(() => {
-              onContentChanged(editorState.toJSON().toString());
-            });
-          }}
-        />
-      </LexicalComposer>
-    </div>
+    <LexicalComposer initialConfig={initialConfig}>
+      <div className='editor-shell'>
+        <Editor />
+      </div>
+    </LexicalComposer>
   );
 };
 export default MarkdownEditor;
