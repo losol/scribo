@@ -52,17 +52,19 @@ export default function Editor(): JSX.Element {
   return (
     <>
       <ToolbarPlugin setIsLinkEditMode={setIsLinkEditMode} />
-      <RichTextPlugin
-        contentEditable={
-          <div className='editor-scroller'>
-            <div className='editor' ref={onRef}>
-              <ContentEditable />
+      <div className='editor-container rich-text'>
+        <RichTextPlugin
+          contentEditable={
+            <div className='editor-scroller'>
+              <div className='editor' ref={onRef}>
+                <ContentEditable />
+              </div>
             </div>
-          </div>
-        }
-        placeholder={placeholder}
-        ErrorBoundary={LexicalErrorBoundary}
-      />
+          }
+          placeholder={placeholder}
+          ErrorBoundary={LexicalErrorBoundary}
+        />
+      </div>
     </>
   );
 }

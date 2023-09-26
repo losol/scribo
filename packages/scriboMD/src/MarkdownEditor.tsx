@@ -13,7 +13,7 @@ import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import LexicalErrorBoundary from '@lexical/react/LexicalErrorBoundary';
 import ToolbarPlugin from './plugins/ToolbarPlugin';
-import MarkdownEditorTheme from './themes/MarkdownEditorTheme';
+import EditorTheme from './themes/EditorTheme';
 import Editor from './Editor';
 
 interface MarkdownEditorProps {
@@ -29,7 +29,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = () => {
     onError: (error: Error) => {
       throw error;
     },
-    theme: MarkdownEditorTheme,
+    theme: EditorTheme,
   };
 
   return (

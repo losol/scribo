@@ -8,7 +8,7 @@
 
 import type { EditorThemeClasses } from 'lexical';
 
-import './MarkdownEditorTheme.css';
+import './EditorTheme.css';
 
 const theme: EditorThemeClasses = {
   blockCursor: 'PlaygroundEditorTheme__blockCursor',
