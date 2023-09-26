@@ -8,6 +8,7 @@
 
 import LexicalErrorBoundary from '@lexical/react/LexicalErrorBoundary';
 import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
+import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin';
 import useLexicalEditable from '@lexical/react/useLexicalEditable';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
@@ -19,10 +20,15 @@ import {
   LexicalComposer,
   InitialConfigType,
 } from '@lexical/react/LexicalComposer';
+import { EditorState, LexicalEditor } from 'lexical';
 
 interface EditorProps {
-  initialContent?: string;
-  onContentChanged?: (markdown: string) => void;
+  // initialContent?: string;
+  onChange?: (
+    editorState: EditorState,
+    editor: LexicalEditor,
+    tags: Set<string>
+  ) => void;
 }
 
 export default function Editor(props: EditorProps): JSX.Element {
@@ -75,6 +81,7 @@ export default function Editor(props: EditorProps): JSX.Element {
             ErrorBoundary={LexicalErrorBoundary}
           />
         </div>
+        {props.onChange && <OnChangePlugin onChange={props.onChange} />}
       </div>
     </>
   );
