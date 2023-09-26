@@ -19,7 +19,7 @@ import { HorizontalRuleNode } from '@lexical/react/LexicalHorizontalRuleNode';
 import { HeadingNode, QuoteNode } from '@lexical/rich-text';
 import { TableCellNode, TableNode, TableRowNode } from '@lexical/table';
 
-const PlaygroundNodes: Array<Klass<LexicalNode>> = [
+const EditorNodes: Array<Klass<LexicalNode>> = [
   HeadingNode,
   ListNode,
   ListItemNode,
@@ -37,4 +37,4 @@ const PlaygroundNodes: Array<Klass<LexicalNode>> = [
   MarkNode,
 ];
 
-export default PlaygroundNodes;
+export default EditorNodes;
