@@ -15,11 +15,18 @@ import { EditorState } from 'lexical';
 
 interface EditorComposerProps {
   initialMarkdown?: string;
-  onChange?: (editorState: EditorState) => void;
+  onChange?: (markdown: string) => void;
 }
 
 function MarkdownEditor(props: EditorComposerProps) {
   const [markdownOutput, setMarkdownOutput] = useState<string>('');
+
+  const internalOnChange = (editorState: EditorState) => {
+    editorState.read(() => {
+      const markdown = $convertToMarkdownString(TRANSFORMERS);
+      props.onChange && props.onChange(markdown);
+    });
+  };
 
   const initialConfig = {
     namespace: 'ScriboMarkdown',
@@ -36,7 +43,7 @@ function MarkdownEditor(props: EditorComposerProps) {
   return (
     <LexicalComposer initialConfig={initialConfig}>
       <div className='editor-shell'>
-        <Editor onChange={props.onChange} />
+        <Editor onChange={internalOnChange} />
       </div>
     </LexicalComposer>
   );

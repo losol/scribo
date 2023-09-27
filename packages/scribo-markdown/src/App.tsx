@@ -1,30 +1,21 @@
 import React, { useState } from 'react';
 import MarkdownEditor from './MarkdownEditor';
-import {
-  $convertFromMarkdownString,
-  $convertToMarkdownString,
-  TRANSFORMERS,
-} from '@lexical/markdown';
-import { EditorState } from 'lexical';
 
 function App() {
-  const [markdownOutput, setMarkdownOutput] = useState<string>('');
-  const initalMarkdown = `Hello **markdown**!`;
+  const initialMarkdown = 'Hello **markdown**!';
+  const [markdown, setMarkdown] = useState<string>(initialMarkdown);
 
-  const onChange = (editorState: EditorState) => {
-    editorState.read(() => {
-      const markdown = $convertToMarkdownString(TRANSFORMERS);
-      setMarkdownOutput(markdown);
-    });
+  const onChange = (markdown: string) => {
+    setMarkdown(markdown);
   };
 
   return (
     <div className='App'>
       <h1>Markdown editor</h1>
       <h2>Make some content</h2>
-      <MarkdownEditor onChange={onChange} initialMarkdown={initalMarkdown} />
+      <MarkdownEditor onChange={onChange} initialMarkdown={markdown} />
       <h2>Markdown output</h2>
-      <pre>{markdownOutput}</pre>
+      <pre>{markdown}</pre>
     </div>
   );
 }

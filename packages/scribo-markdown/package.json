@@ -1,7 +1,11 @@
 {
-  "name": "scribo",
+  "name": "@losol/scribo-markdown",
   "version": "0.1.0",
-  "private": true,
+  "files": [
+    "build",
+    "src"
+  ],
+  "main": "build/index.js",
   "dependencies": {
     "@lexical/markdown": "^0.12.2",
     "@lexical/react": "^0.12.2",
