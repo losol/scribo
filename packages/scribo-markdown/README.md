@@ -27,6 +27,7 @@ See the section about [deployment](https://facebook.github.io/create-react-app/d
 ## Update npm package
 
 1. Update version number in package.json
+1. `npm run build`
 1. `npm login --scope @losol --auth-type web`
 1. `npm publish --access public`
 

@@ -1,8 +1,5 @@
 import React, { useState } from 'react';
-import {
-  InitialEditorStateType,
-  LexicalComposer,
-} from '@lexical/react/LexicalComposer';
+import { LexicalComposer } from '@lexical/react/LexicalComposer';
 import Editor from './Editor';
 import EditorTheme from './themes/EditorTheme';
 import EditorNodes from './nodes/EditorNodes';
@@ -18,9 +15,7 @@ interface EditorComposerProps {
   onChange?: (markdown: string) => void;
 }
 
-function MarkdownEditor(props: EditorComposerProps) {
-  const [markdownOutput, setMarkdownOutput] = useState<string>('');
-
+export const MarkdownEditor: React.FC<EditorComposerProps> = (props) => {
   const internalOnChange = (editorState: EditorState) => {
     editorState.read(() => {
       const markdown = $convertToMarkdownString(TRANSFORMERS);
@@ -47,6 +42,4 @@ function MarkdownEditor(props: EditorComposerProps) {
       </div>
     </LexicalComposer>
   );
-}
-
-export default MarkdownEditor;
+};
