@@ -66,21 +66,23 @@ export default function Editor(props: EditorProps): JSX.Element {
 
   return (
     <>
-      <ToolbarPlugin setIsLinkEditMode={setIsLinkEditMode} />
-      <div className='editor-container rich-text'>
-        <RichTextPlugin
-          contentEditable={
-            <div className='editor-scroller'>
-              <div className='editor' ref={onRef}>
-                <ContentEditable />
+      <div className='editor-shell'>
+        <ToolbarPlugin setIsLinkEditMode={setIsLinkEditMode} />
+        <div className='editor-container rich-text'>
+          <RichTextPlugin
+            contentEditable={
+              <div className='editor-scroller'>
+                <div className='editor' ref={onRef}>
+                  <ContentEditable />
+                </div>
               </div>
-            </div>
-          }
-          placeholder={placeholder}
-          ErrorBoundary={LexicalErrorBoundary}
-        />
+            }
+            placeholder={placeholder}
+            ErrorBoundary={LexicalErrorBoundary}
+          />
+        </div>
+        {props.onChange && <OnChangePlugin onChange={props.onChange} />}
       </div>
-      {props.onChange && <OnChangePlugin onChange={props.onChange} />}
     </>
   );
 }

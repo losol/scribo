@@ -37,9 +37,7 @@ export const MarkdownEditor: React.FC<EditorComposerProps> = (props) => {
 
   return (
     <LexicalComposer initialConfig={initialConfig}>
-      <div className='editor-shell'>
-        <Editor onChange={internalOnChange} />
-      </div>
+      <Editor onChange={internalOnChange} />
     </LexicalComposer>
   );
 };
