@@ -1,8 +1,5 @@
 import React, { useState } from 'react';
-import { LexicalComposer } from '@lexical/react/LexicalComposer';
-import Editor from './Editor';
-import EditorTheme from './themes/EditorTheme';
-import EditorNodes from './nodes/EditorNodes';
+import MarkdownEditor from './MarkdownEditor';
 import {
   $convertFromMarkdownString,
   $convertToMarkdownString,
@@ -21,23 +18,11 @@ function App() {
     });
   };
 
-  const initialConfig = {
-    editorState: () => $convertFromMarkdownString(initalMarkdown, TRANSFORMERS),
-    namespace: 'ScriboMD',
-    nodes: [...EditorNodes],
-    onError: (error: Error) => {
-      throw error;
-    },
-    theme: EditorTheme,
-  };
-
   return (
     <div className='App'>
       <h1>Markdown editor</h1>
       <h2>Make some content</h2>
-      <LexicalComposer initialConfig={initialConfig}>
-        <Editor onChange={onChange} />
-      </LexicalComposer>
+      <MarkdownEditor onChange={onChange} initialMarkdown={initalMarkdown} />
       <h2>Markdown output</h2>
       <pre>{markdownOutput}</pre>
     </div>

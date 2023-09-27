@@ -23,7 +23,6 @@ import {
 import { EditorState, LexicalEditor } from 'lexical';
 
 interface EditorProps {
-  // initialContent?: string;
   onChange?: (
     editorState: EditorState,
     editor: LexicalEditor,
@@ -66,23 +65,21 @@ export default function Editor(props: EditorProps): JSX.Element {
 
   return (
     <>
-      <div className='editor-shell'>
-        <ToolbarPlugin setIsLinkEditMode={setIsLinkEditMode} />
-        <div className='editor-container rich-text'>
-          <RichTextPlugin
-            contentEditable={
-              <div className='editor-scroller'>
-                <div className='editor' ref={onRef}>
-                  <ContentEditable />
-                </div>
+      <ToolbarPlugin setIsLinkEditMode={setIsLinkEditMode} />
+      <div className='editor-container rich-text'>
+        <RichTextPlugin
+          contentEditable={
+            <div className='editor-scroller'>
+              <div className='editor' ref={onRef}>
+                <ContentEditable />
               </div>
-            }
-            placeholder={placeholder}
-            ErrorBoundary={LexicalErrorBoundary}
-          />
-        </div>
-        {props.onChange && <OnChangePlugin onChange={props.onChange} />}
+            </div>
+          }
+          placeholder={placeholder}
+          ErrorBoundary={LexicalErrorBoundary}
+        />
       </div>
+      {props.onChange && <OnChangePlugin onChange={props.onChange} />}
     </>
   );
 }
