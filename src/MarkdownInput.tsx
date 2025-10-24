@@ -13,21 +13,28 @@ export type MarkdownInputProps = {
   labelClassName?: string;
   editorClassName?: string;
   errorClassName?: string;
+  onChange?: (value: string) => void;
 };
 
 /**
- * MarkdownInput component that works with native forms (FormData API)
+ * MarkdownInput component that works standalone or with parent form handling
+ * Uses onChange callback to notify parent of value changes
  * Framework-agnostic with flexible className props for custom styling
  */
 const MarkdownInput = (props: MarkdownInputProps) => {
-  const [value, setValue] = useState(props.defaultValue ?? '');
   const [error, setError] = useState<string | null>(null);
+  const [value, setValue] = useState(props.defaultValue ?? '');
   const plainTextRef = useRef('');
   const id = props.id ?? props.name;
 
   const handleChange = (markdown: string, { plainText }: { plainText: string }) => {
-    setValue(markdown);
     plainTextRef.current = plainText;
+    setValue(markdown);
+
+    // Notify parent component of the change
+    if (props.onChange) {
+      props.onChange(markdown);
+    }
 
     // Validate maxLength if provided
     if (props.maxLength && plainText.length >= props.maxLength) {
@@ -44,8 +51,12 @@ const MarkdownInput = (props: MarkdownInputProps) => {
           {props.label}
         </label>
       )}
-      {/* Hidden input to submit markdown value with the form */}
-      <input type="hidden" name={props.name} value={value} />
+      {/* Hidden input to store value - controlled by React state */}
+      <input
+        type="hidden"
+        name={props.name}
+        value={value}
+      />
       <MarkdownEditor
         onChange={handleChange}
         className={props.editorClassName}
