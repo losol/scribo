@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Lint & build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm exec eslint .
+
+      - run: pnpm build
+
+      # The package publishes source with types from dist, so a passing build
+      # is not proof the tarball is complete — check what npm would ship.
+      - name: Verify the publishable tarball
+        run: |
+          set -euo pipefail
+          npm pack --dry-run 2>&1 | tee /tmp/pack.log
+          for f in src/main.tsx dist/main.d.ts dist/scribo.css \
+                   src/nodes/schedule/index.ts dist/nodes/schedule/index.d.ts \
+                   src/nodes/callout/index.ts dist/nodes/callout/index.d.ts; do
+            grep -q " $f\$" /tmp/pack.log || { echo "::error::$f missing from the tarball"; exit 1; }
+          done

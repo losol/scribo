@@ -1,10 +1,15 @@
 {
   "name": "@eventuras/scribo",
   "version": "0.10.6",
+  "description": "Markdown editor built on Lexical — WYSIWYG editing with markdown export",
+  "license": "MIT",
+  "homepage": "https://scribo.losol.no/",
   "repository": {
     "type": "git",
-    "url": "https://github.com/losol/eventuras.git",
-    "directory": "libs/scribo"
+    "url": "https://github.com/losol/scribo.git"
+  },
+  "bugs": {
+    "url": "https://github.com/losol/scribo/issues"
   },
   "type": "module",
   "exports": {
