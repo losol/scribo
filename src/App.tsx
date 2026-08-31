@@ -1,11 +1,11 @@
-import { useState } from 'react'
-import MarkdownEditor from './MarkdownEditor'
-import { schedulePlugin } from './nodes/schedule'
-import { calloutPlugin } from './nodes/callout'
+import { useState } from 'react';
+import MarkdownEditor from './MarkdownEditor';
+import { calloutPlugin } from './nodes/callout';
+import { schedulePlugin } from './nodes/schedule';
 
 interface Props {
   /** Initial markdown string */
-  initialMarkdown: string
+  initialMarkdown: string;
 }
 
 /**
@@ -14,10 +14,10 @@ interface Props {
  */
 export function App({ initialMarkdown }: Readonly<Props>) {
   // State for current markdown
-  const [markdown, setMarkdown] = useState<string>(initialMarkdown)
+  const [markdown, setMarkdown] = useState<string>(initialMarkdown);
 
   // Handle editor changes
-  const onChange = (newMd: string) => setMarkdown(newMd)
+  const onChange = (newMd: string) => setMarkdown(newMd);
 
   return (
     <div className="App">
@@ -41,5 +41,5 @@ export function App({ initialMarkdown }: Readonly<Props>) {
         </div>
       </div>
     </div>
-  )
+  );
 }

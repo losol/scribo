@@ -1,6 +1,6 @@
 'use client';
-import MarkdownEditor from './MarkdownEditor';
 import { useRef, useState } from 'react';
+import MarkdownEditor from './MarkdownEditor';
 import type { ScriboPlugin } from './types';
 
 export type MarkdownInputProps = {
@@ -30,7 +30,7 @@ const MarkdownInput = (props: MarkdownInputProps) => {
   const plainTextRef = useRef('');
   const id = props.id ?? props.name;
 
-  const handleChange = (markdown: string, { plainText }: { plainText: string; }) => {
+  const handleChange = (markdown: string, { plainText }: { plainText: string }) => {
     plainTextRef.current = plainText;
     setValue(markdown);
 
@@ -55,11 +55,7 @@ const MarkdownInput = (props: MarkdownInputProps) => {
         </label>
       )}
       {/* Hidden input to store value - controlled by React state */}
-      <input
-        type="hidden"
-        name={props.name}
-        value={value}
-      />
+      <input type="hidden" name={props.name} value={value} />
       <MarkdownEditor
         onChange={handleChange}
         className={props.editorClassName}

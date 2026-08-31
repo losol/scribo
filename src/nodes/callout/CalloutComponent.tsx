@@ -1,6 +1,6 @@
 import './Callout.css';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
-import { $getNodeByKey, $createParagraphNode } from 'lexical';
+import { $createParagraphNode, $getNodeByKey } from 'lexical';
 import { useEffect } from 'react';
 
 import { $isCalloutNode, CALLOUT_TYPES, type CalloutType } from './CalloutNode';

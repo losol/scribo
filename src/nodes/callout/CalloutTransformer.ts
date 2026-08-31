@@ -1,6 +1,6 @@
 import {
-  type MultilineElementTransformer,
   $convertFromMarkdownString,
+  type MultilineElementTransformer,
   TRANSFORMERS,
 } from '@lexical/markdown';
 import { $createParagraphNode } from 'lexical';
@@ -8,8 +8,8 @@ import { $createParagraphNode } from 'lexical';
 import {
   $createCalloutNode,
   $isCalloutNode,
-  CalloutNode,
   CALLOUT_TYPES,
+  CalloutNode,
   type CalloutType,
 } from './CalloutNode';
 
@@ -56,7 +56,7 @@ export const CALLOUT_TRANSFORMER: MultilineElementTransformer = {
     const contentLines = (linesInBetween ?? [])
       .map((line) => {
         const match = line.match(BLOCKQUOTE_LINE_REGEX);
-        return match ? match[1] ?? '' : null;
+        return match ? (match[1] ?? '') : null;
       })
       .filter((line): line is string => line !== null);
 

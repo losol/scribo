@@ -1,13 +1,13 @@
 import {
   $applyNodeReplacement,
   $createParagraphNode,
-  DOMConversionMap,
-  DOMExportOutput,
+  type DOMConversionMap,
+  type DOMExportOutput,
   ElementNode,
-  LexicalNode,
-  NodeKey,
-  SerializedElementNode,
-  Spread,
+  type LexicalNode,
+  type NodeKey,
+  type SerializedElementNode,
+  type Spread,
 } from 'lexical';
 
 export const CALLOUT_TYPES = ['NOTE', 'TIP', 'IMPORTANT', 'WARNING', 'CAUTION'] as const;
@@ -21,10 +21,7 @@ const CALLOUT_ICONS: Record<CalloutType, string> = {
   CAUTION: '🔴',
 };
 
-export type SerializedCalloutNode = Spread<
-  { calloutType: CalloutType },
-  SerializedElementNode
->;
+export type SerializedCalloutNode = Spread<{ calloutType: CalloutType }, SerializedElementNode>;
 
 export class CalloutNode extends ElementNode {
   __calloutType: CalloutType;
@@ -79,10 +76,12 @@ export class CalloutNode extends ElementNode {
       select.appendChild(option);
     }
     select.addEventListener('change', () => {
-      wrapper.dispatchEvent(new CustomEvent('callout-type-change', {
-        bubbles: true,
-        detail: { nodeKey: wrapper.dataset.calloutKey, calloutType: select.value },
-      }));
+      wrapper.dispatchEvent(
+        new CustomEvent('callout-type-change', {
+          bubbles: true,
+          detail: { nodeKey: wrapper.dataset.calloutKey, calloutType: select.value },
+        })
+      );
     });
     toolbar.appendChild(select);
 
@@ -93,10 +92,12 @@ export class CalloutNode extends ElementNode {
     removeBtn.title = 'Remove callout';
     removeBtn.setAttribute('aria-label', 'Remove callout');
     removeBtn.addEventListener('click', () => {
-      wrapper.dispatchEvent(new CustomEvent('callout-remove', {
-        bubbles: true,
-        detail: { nodeKey: wrapper.dataset.calloutKey },
-      }));
+      wrapper.dispatchEvent(
+        new CustomEvent('callout-remove', {
+          bubbles: true,
+          detail: { nodeKey: wrapper.dataset.calloutKey },
+        })
+      );
     });
     toolbar.appendChild(removeBtn);
 

@@ -2,27 +2,26 @@ import {
   $convertFromMarkdownString,
   $convertToMarkdownString,
   TRANSFORMERS,
-} from "@lexical/markdown";
-import { $createParagraphNode, $createTextNode, $getRoot } from 'lexical';
-import { LexicalComposer } from "@lexical/react/LexicalComposer";
-import { LexicalErrorBoundary } from "@lexical/react/LexicalErrorBoundary";
-import { OnChangePlugin } from "@lexical/react/LexicalOnChangePlugin";
-import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
-import { EditorState } from "lexical";
-import React, { useMemo, useState } from "react";
-
-import EditorNodes from "./nodes/EditorNodes";
-import ToolbarPlugin from "./plugins/ToolbarPlugin";
-import EditorTheme from "./themes/EditorTheme";
-import ContentEditable from "./ui/ContentEditable";
-import Placeholder from "./ui/Placeholder";
+} from '@lexical/markdown';
+import { LexicalComposer } from '@lexical/react/LexicalComposer';
+import { LexicalErrorBoundary } from '@lexical/react/LexicalErrorBoundary';
 import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
 import { MarkdownShortcutPlugin } from '@lexical/react/LexicalMarkdownShortcutPlugin';
-import LinkPlugin from "./plugins/LinkPlugin";
-import FloatingLinkEditorPlugin from "./plugins/FloatingLinkEditorPlugin";
-import AutoLinkPlugin from "./plugins/AutoLinkPlugin";
+import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin';
+import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
+import { $createParagraphNode, $createTextNode, $getRoot, type EditorState } from 'lexical';
+import type React from 'react';
+import { useMemo, useState } from 'react';
 import { useSharedHistoryContext } from './context/SharedHistoryContext';
+import EditorNodes from './nodes/EditorNodes';
+import AutoLinkPlugin from './plugins/AutoLinkPlugin';
+import FloatingLinkEditorPlugin from './plugins/FloatingLinkEditorPlugin';
+import LinkPlugin from './plugins/LinkPlugin';
+import ToolbarPlugin from './plugins/ToolbarPlugin';
+import EditorTheme from './themes/EditorTheme';
 import type { ScriboPlugin } from './types';
+import ContentEditable from './ui/ContentEditable';
+import Placeholder from './ui/Placeholder';
 
 export type onChangeMisc = {
   plainText: string;
@@ -42,8 +41,9 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = (props) => {
   const { historyState } = useSharedHistoryContext();
   const [isLinkEditMode, setIsLinkEditMode] = useState<boolean>(false);
 
-  const [floatingAnchorElem, setFloatingAnchorElem] =
-    useState<HTMLDivElement | undefined>(undefined);
+  const [floatingAnchorElem, setFloatingAnchorElem] = useState<HTMLDivElement | undefined>(
+    undefined
+  );
 
   const onRef = (_floatingAnchorElem: HTMLDivElement) => {
     if (_floatingAnchorElem !== null) {
@@ -57,10 +57,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = (props) => {
     [props.plugins]
   );
   const allTransformers = useMemo(
-    () => [
-      ...(props.plugins ?? []).flatMap((p) => p.transformers ?? []),
-      ...TRANSFORMERS,
-    ],
+    () => [...(props.plugins ?? []).flatMap((p) => p.transformers ?? []), ...TRANSFORMERS],
     [props.plugins]
   );
   const toolbarButtons = useMemo(
@@ -81,7 +78,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = (props) => {
   };
 
   const initialConfig = {
-    namespace: "ScriboMarkdown",
+    namespace: 'ScriboMarkdown',
     nodes: [...EditorNodes, ...pluginNodes],
     onError: (error: Error) => {
       throw error;
@@ -90,7 +87,10 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = (props) => {
     editorState: props.initialMarkdown
       ? () => {
           // Unescape backslash-escaped markdown characters
-          const unescapedMarkdown = props.initialMarkdown!.replaceAll(/\\([*_`\[\]()#+-])/g, '$1');
+          const unescapedMarkdown = (props.initialMarkdown ?? '').replaceAll(
+            /\\([*_`[\]()#+-])/g,
+            '$1'
+          );
           try {
             $convertFromMarkdownString(unescapedMarkdown, allTransformers);
           } catch (err) {
@@ -111,7 +111,12 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = (props) => {
   return (
     <div className={props.className}>
       <LexicalComposer initialConfig={initialConfig}>
-        <div className="editor-shell" onBlur={props.onBlur} data-testid={props['data-testid']} id={props.id}>
+        <div
+          className="editor-shell"
+          onBlur={props.onBlur}
+          data-testid={props['data-testid']}
+          id={props.id}
+        >
           <ToolbarPlugin setIsLinkEditMode={setIsLinkEditMode} toolbarButtons={toolbarButtons} />
           <div className="editor-container rich-text">
             <HistoryPlugin externalHistoryState={historyState} />
@@ -126,7 +131,11 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = (props) => {
             <RichTextPlugin
               contentEditable={
                 <div className="editor-scroller">
-                  <div className="editor" ref={onRef} id={props.id ? `${props.id}-editable` : undefined}>
+                  <div
+                    className="editor"
+                    ref={onRef}
+                    id={props.id ? `${props.id}-editable` : undefined}
+                  >
                     <ContentEditable />
                   </div>
                 </div>

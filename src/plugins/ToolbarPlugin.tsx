@@ -16,27 +16,23 @@ import {
   CODE_LANGUAGE_MAP,
   getLanguageFriendlyName,
 } from '@lexical/code';
-import { $isLinkNode, TOGGLE_LINK_COMMAND } from "@lexical/link";
+import { $isLinkNode, TOGGLE_LINK_COMMAND } from '@lexical/link';
 import {
   $isListNode,
   INSERT_ORDERED_LIST_COMMAND,
   INSERT_UNORDERED_LIST_COMMAND,
   ListNode,
   REMOVE_LIST_COMMAND,
-} from "@lexical/list";
+} from '@lexical/list';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import {
   $createHeadingNode,
   $createQuoteNode,
   $isHeadingNode,
-  HeadingTagType,
-} from "@lexical/rich-text";
-import { $setBlocksType } from "@lexical/selection";
-import {
-  $findMatchingParent,
-  $getNearestNodeOfType,
-  mergeRegister,
-} from "@lexical/utils";
+  type HeadingTagType,
+} from '@lexical/rich-text';
+import { $setBlocksType } from '@lexical/selection';
+import { $findMatchingParent, $getNearestNodeOfType, mergeRegister } from '@lexical/utils';
 import {
   $createParagraphNode,
   $getNodeByKey,
@@ -49,40 +45,37 @@ import {
   COMMAND_PRIORITY_NORMAL,
   FORMAT_TEXT_COMMAND,
   KEY_MODIFIER_COMMAND,
-  LexicalEditor,
-  NodeKey,
+  type LexicalEditor,
+  type NodeKey,
   REDO_COMMAND,
   SELECTION_CHANGE_COMMAND,
   UNDO_COMMAND,
 } from 'lexical';
-import { Dispatch, useCallback, useEffect, useState } from "react";
-import type {JSX} from 'react';
-
-import DropDown, { DropDownItem } from "../ui/DropDown";
-import { IS_APPLE } from "../utils/environment";
-import { getSelectedNode } from "../utils/getSelectedNode";
-import { sanitizeUrl } from "../utils/url";
-import type { ScriboToolbarButton } from "../types";
+import type { JSX } from 'react';
+import { type Dispatch, useCallback, useEffect, useState } from 'react';
+import type { ScriboToolbarButton } from '../types';
+import DropDown, { DropDownItem } from '../ui/DropDown';
+import { IS_APPLE } from '../utils/environment';
+import { getSelectedNode } from '../utils/getSelectedNode';
+import { sanitizeUrl } from '../utils/url';
 
 const blockTypeToBlockName = {
-  paragraph: "Normal",
-  h1: "Heading 1",
-  h2: "Heading 2",
-  h3: "Heading 3",
-  h4: "Heading 4",
-  bullet: "Bulleted List",
-  check: "Check List",
-  code: "Code Block",
-  number: "Numbered List",
-  quote: "Quote",
+  paragraph: 'Normal',
+  h1: 'Heading 1',
+  h2: 'Heading 2',
+  h3: 'Heading 3',
+  h4: 'Heading 4',
+  bullet: 'Bulleted List',
+  check: 'Check List',
+  code: 'Code Block',
+  number: 'Numbered List',
+  quote: 'Quote',
 };
 
 function getCodeLanguageOptions(): [string, string][] {
   const options: [string, string][] = [];
 
-  for (const [lang, friendlyName] of Object.entries(
-    CODE_LANGUAGE_FRIENDLY_NAME_MAP,
-  )) {
+  for (const [lang, friendlyName] of Object.entries(CODE_LANGUAGE_FRIENDLY_NAME_MAP)) {
     options.push([lang, friendlyName]);
   }
 
@@ -92,8 +85,8 @@ function getCodeLanguageOptions(): [string, string][] {
 const CODE_LANGUAGE_OPTIONS = getCodeLanguageOptions();
 
 function dropDownActiveClass(active: boolean) {
-  if (active) return "active dropdown-item-active";
-  else return "";
+  if (active) return 'active dropdown-item-active';
+  else return '';
 }
 
 function BlockFormatDropDown({
@@ -105,28 +98,28 @@ function BlockFormatDropDown({
   editor: LexicalEditor;
   disabled?: boolean;
 }>): JSX.Element {
-    const formatParagraph = () => {
-  editor.update(() => {
-    const selection = $getSelection();
-    if ($isRangeSelection(selection)) {
-      $setBlocksType(selection, () => $createParagraphNode());
-    }
-  });
-};
-
-const formatHeading = (headingSize: HeadingTagType) => {
-  if (blockType !== headingSize) {
+  const formatParagraph = () => {
     editor.update(() => {
       const selection = $getSelection();
       if ($isRangeSelection(selection)) {
-        $setBlocksType(selection, () => $createHeadingNode(headingSize));
+        $setBlocksType(selection, () => $createParagraphNode());
       }
     });
-  }
-};
+  };
+
+  const formatHeading = (headingSize: HeadingTagType) => {
+    if (blockType !== headingSize) {
+      editor.update(() => {
+        const selection = $getSelection();
+        if ($isRangeSelection(selection)) {
+          $setBlocksType(selection, () => $createHeadingNode(headingSize));
+        }
+      });
+    }
+  };
 
   const formatBulletList = () => {
-    if (blockType !== "bullet") {
+    if (blockType !== 'bullet') {
       editor.dispatchCommand(INSERT_UNORDERED_LIST_COMMAND, undefined);
     } else {
       editor.dispatchCommand(REMOVE_LIST_COMMAND, undefined);
@@ -134,25 +127,25 @@ const formatHeading = (headingSize: HeadingTagType) => {
   };
 
   const formatNumberedList = () => {
-    if (blockType !== "number") {
+    if (blockType !== 'number') {
       editor.dispatchCommand(INSERT_ORDERED_LIST_COMMAND, undefined);
     } else {
       editor.dispatchCommand(REMOVE_LIST_COMMAND, undefined);
     }
   };
 
-const formatQuote = () => {
-  if (blockType !== 'quote') {
-    editor.update(() => {
-      const selection = $getSelection();
-      if ($isRangeSelection(selection)) {
-        $setBlocksType(selection, () => $createQuoteNode());
-      }
-    });
-  }
-};
+  const formatQuote = () => {
+    if (blockType !== 'quote') {
+      editor.update(() => {
+        const selection = $getSelection();
+        if ($isRangeSelection(selection)) {
+          $setBlocksType(selection, () => $createQuoteNode());
+        }
+      });
+    }
+  };
 
-    const formatCode = () => {
+  const formatCode = () => {
     if (blockType !== 'code') {
       editor.update(() => {
         let selection = $getSelection();
@@ -178,61 +171,61 @@ const formatQuote = () => {
     <DropDown
       disabled={disabled}
       buttonClassName="toolbar-item block-controls"
-      buttonIconClassName={"icon block-type " + blockType}
+      buttonIconClassName={'icon block-type ' + blockType}
       buttonLabel={blockTypeToBlockName[blockType]}
       buttonAriaLabel="Formatting options for text style"
     >
       <DropDownItem
-        className={"item " + dropDownActiveClass(blockType === "paragraph")}
+        className={'item ' + dropDownActiveClass(blockType === 'paragraph')}
         onClick={formatParagraph}
       >
         <i className="icon paragraph" />
         <span className="text">Normal</span>
       </DropDownItem>
       <DropDownItem
-        className={"item " + dropDownActiveClass(blockType === "h1")}
-        onClick={() => formatHeading("h1")}
+        className={'item ' + dropDownActiveClass(blockType === 'h1')}
+        onClick={() => formatHeading('h1')}
       >
         <i className="icon h1" />
         <span className="text">Heading 1</span>
       </DropDownItem>
       <DropDownItem
-        className={"item " + dropDownActiveClass(blockType === "h2")}
-        onClick={() => formatHeading("h2")}
+        className={'item ' + dropDownActiveClass(blockType === 'h2')}
+        onClick={() => formatHeading('h2')}
       >
         <i className="icon h2" />
         <span className="text">Heading 2</span>
       </DropDownItem>
       <DropDownItem
-        className={"item " + dropDownActiveClass(blockType === "h3")}
-        onClick={() => formatHeading("h3")}
+        className={'item ' + dropDownActiveClass(blockType === 'h3')}
+        onClick={() => formatHeading('h3')}
       >
         <i className="icon h3" />
         <span className="text">Heading 3</span>
       </DropDownItem>
       <DropDownItem
-        className={"item " + dropDownActiveClass(blockType === "h4")}
-        onClick={() => formatHeading("h4")}
+        className={'item ' + dropDownActiveClass(blockType === 'h4')}
+        onClick={() => formatHeading('h4')}
       >
         <i className="icon h4" />
         <span className="text">Heading 4</span>
       </DropDownItem>
       <DropDownItem
-        className={"item " + dropDownActiveClass(blockType === "bullet")}
+        className={'item ' + dropDownActiveClass(blockType === 'bullet')}
         onClick={formatBulletList}
       >
         <i className="icon bullet-list" />
         <span className="text">Bullet List</span>
       </DropDownItem>
       <DropDownItem
-        className={"item " + dropDownActiveClass(blockType === "number")}
+        className={'item ' + dropDownActiveClass(blockType === 'number')}
         onClick={formatNumberedList}
       >
         <i className="icon numbered-list" />
         <span className="text">Numbered List</span>
       </DropDownItem>
       <DropDownItem
-        className={"item " + dropDownActiveClass(blockType === "quote")}
+        className={'item ' + dropDownActiveClass(blockType === 'quote')}
         onClick={formatQuote}
       >
         <i className="icon quote" />
@@ -240,7 +233,8 @@ const formatQuote = () => {
       </DropDownItem>
       <DropDownItem
         className={'item ' + dropDownActiveClass(blockType === 'code')}
-        onClick={formatCode}>
+        onClick={formatCode}
+      >
         <i className="icon code" />
         <span className="text">Code Block</span>
       </DropDownItem>
@@ -261,18 +255,15 @@ export default function ToolbarPlugin({
 }>): JSX.Element {
   const [editor] = useLexicalComposerContext();
   const [activeEditor, setActiveEditor] = useState(editor);
-  const [blockType, setBlockType] =
-    useState<keyof typeof blockTypeToBlockName>("paragraph");
-  const [selectedElementKey, setSelectedElementKey] = useState<NodeKey | null>(
-    null,
-  );
+  const [blockType, setBlockType] = useState<keyof typeof blockTypeToBlockName>('paragraph');
+  const [selectedElementKey, setSelectedElementKey] = useState<NodeKey | null>(null);
   const [_isCode, setIsCode] = useState(false);
   const [isLink, setIsLink] = useState(false);
   const [isBold, setIsBold] = useState(false);
   const [isItalic, setIsItalic] = useState(false);
   const [canUndo, setCanUndo] = useState(false);
   const [canRedo, setCanRedo] = useState(false);
-  const [codeLanguage, setCodeLanguage] = useState<string>("");
+  const [codeLanguage, setCodeLanguage] = useState<string>('');
   const [isEditable, setIsEditable] = useState(() => editor.isEditable());
 
   const $updateToolbar = useCallback(() => {
@@ -280,7 +271,7 @@ export default function ToolbarPlugin({
     if ($isRangeSelection(selection)) {
       const anchorNode = selection.anchor.getNode();
       let element =
-        anchorNode.getKey() === "root"
+        anchorNode.getKey() === 'root'
           ? anchorNode
           : $findMatchingParent(anchorNode, (e) => {
               const parent = e.getParent();
@@ -295,9 +286,9 @@ export default function ToolbarPlugin({
       const elementDOM = activeEditor.getElementByKey(elementKey);
 
       // Update text format
-      setIsCode(selection.hasFormat("code"));
-      setIsBold(selection.hasFormat("bold"));
-      setIsItalic(selection.hasFormat("italic"));
+      setIsCode(selection.hasFormat('code'));
+      setIsBold(selection.hasFormat('bold'));
+      setIsItalic(selection.hasFormat('italic'));
 
       // Update links
       const node = getSelectedNode(selection);
@@ -311,27 +302,17 @@ export default function ToolbarPlugin({
       if (elementDOM !== null) {
         setSelectedElementKey(elementKey);
         if ($isListNode(element)) {
-          const parentList = $getNearestNodeOfType<ListNode>(
-            anchorNode,
-            ListNode,
-          );
-          const type = parentList
-            ? parentList.getListType()
-            : element.getListType();
+          const parentList = $getNearestNodeOfType<ListNode>(anchorNode, ListNode);
+          const type = parentList ? parentList.getListType() : element.getListType();
           setBlockType(type);
         } else {
-          const type = $isHeadingNode(element)
-            ? element.getTag()
-            : element.getType();
+          const type = $isHeadingNode(element) ? element.getTag() : element.getType();
           if (type in blockTypeToBlockName) {
             setBlockType(type as keyof typeof blockTypeToBlockName);
           }
           if ($isCodeNode(element)) {
-            const language =
-              element.getLanguage() as keyof typeof CODE_LANGUAGE_MAP;
-            setCodeLanguage(
-              language ? CODE_LANGUAGE_MAP[language] || language : '',
-            );
+            const language = element.getLanguage() as keyof typeof CODE_LANGUAGE_MAP;
+            setCodeLanguage(language ? CODE_LANGUAGE_MAP[language] || language : '');
             return;
           }
         }
@@ -347,7 +328,7 @@ export default function ToolbarPlugin({
         setActiveEditor(newEditor);
         return false;
       },
-      COMMAND_PRIORITY_CRITICAL,
+      COMMAND_PRIORITY_CRITICAL
     );
   }, [editor, $updateToolbar]);
 
@@ -367,7 +348,7 @@ export default function ToolbarPlugin({
           setCanUndo(payload);
           return false;
         },
-        COMMAND_PRIORITY_CRITICAL,
+        COMMAND_PRIORITY_CRITICAL
       ),
       activeEditor.registerCommand<boolean>(
         CAN_REDO_COMMAND,
@@ -375,8 +356,8 @@ export default function ToolbarPlugin({
           setCanRedo(payload);
           return false;
         },
-        COMMAND_PRIORITY_CRITICAL,
-      ),
+        COMMAND_PRIORITY_CRITICAL
+      )
     );
   }, [$updateToolbar, activeEditor, editor]);
 
@@ -387,27 +368,24 @@ export default function ToolbarPlugin({
         const event: KeyboardEvent = payload;
         const { code, ctrlKey, metaKey } = event;
 
-        if (code === "KeyK" && (ctrlKey || metaKey)) {
+        if (code === 'KeyK' && (ctrlKey || metaKey)) {
           event.preventDefault();
           if (!isLink) {
             setIsLinkEditMode(true);
           } else {
             setIsLinkEditMode(false);
           }
-          return activeEditor.dispatchCommand(
-            TOGGLE_LINK_COMMAND,
-            sanitizeUrl("https://"),
-          );
+          return activeEditor.dispatchCommand(TOGGLE_LINK_COMMAND, sanitizeUrl('https://'));
         }
         return false;
       },
-      COMMAND_PRIORITY_NORMAL,
+      COMMAND_PRIORITY_NORMAL
     );
   }, [activeEditor, isLink, setIsLinkEditMode]);
 
   const insertLink = useCallback(() => {
     if (!isLink) {
-      editor.dispatchCommand(TOGGLE_LINK_COMMAND, sanitizeUrl("https://"));
+      editor.dispatchCommand(TOGGLE_LINK_COMMAND, sanitizeUrl('https://'));
     } else {
       editor.dispatchCommand(TOGGLE_LINK_COMMAND, null);
     }
@@ -424,7 +402,7 @@ export default function ToolbarPlugin({
         }
       });
     },
-    [activeEditor, selectedElementKey],
+    [activeEditor, selectedElementKey]
   );
   return (
     <div className="toolbar">
@@ -433,7 +411,7 @@ export default function ToolbarPlugin({
         onClick={() => {
           activeEditor.dispatchCommand(UNDO_COMMAND, undefined);
         }}
-        title={IS_APPLE ? "Undo (⌘Z)" : "Undo (Ctrl+Z)"}
+        title={IS_APPLE ? 'Undo (⌘Z)' : 'Undo (Ctrl+Z)'}
         type="button"
         className="toolbar-item spaced"
         aria-label="Undo"
@@ -445,7 +423,7 @@ export default function ToolbarPlugin({
         onClick={() => {
           activeEditor.dispatchCommand(REDO_COMMAND, undefined);
         }}
-        title={IS_APPLE ? "Redo (⌘Y)" : "Redo (Ctrl+Y)"}
+        title={IS_APPLE ? 'Redo (⌘Y)' : 'Redo (Ctrl+Y)'}
         type="button"
         className="toolbar-item"
         aria-label="Redo"
@@ -455,15 +433,11 @@ export default function ToolbarPlugin({
       <Divider />
       {blockType in blockTypeToBlockName && activeEditor === editor && (
         <>
-          <BlockFormatDropDown
-            disabled={!isEditable}
-            blockType={blockType}
-            editor={editor}
-          />
+          <BlockFormatDropDown disabled={!isEditable} blockType={blockType} editor={editor} />
           <Divider />
         </>
       )}
-      {blockType === "code" ? (
+      {blockType === 'code' ? (
         <DropDown
           disabled={!isEditable}
           buttonClassName="toolbar-item code-language"
@@ -473,9 +447,7 @@ export default function ToolbarPlugin({
           {CODE_LANGUAGE_OPTIONS.map(([value, name]) => {
             return (
               <DropDownItem
-                className={`item ${dropDownActiveClass(
-                  value === codeLanguage,
-                )}`}
+                className={`item ${dropDownActiveClass(value === codeLanguage)}`}
                 onClick={() => onCodeLanguageSelect(value)}
                 key={value}
               >
@@ -489,35 +461,31 @@ export default function ToolbarPlugin({
           <button
             disabled={!isEditable}
             onClick={() => {
-              activeEditor.dispatchCommand(FORMAT_TEXT_COMMAND, "bold");
+              activeEditor.dispatchCommand(FORMAT_TEXT_COMMAND, 'bold');
             }}
-            className={"toolbar-item spaced " + (isBold ? "active" : "")}
-            title={IS_APPLE ? "Bold (⌘B)" : "Bold (Ctrl+B)"}
+            className={'toolbar-item spaced ' + (isBold ? 'active' : '')}
+            title={IS_APPLE ? 'Bold (⌘B)' : 'Bold (Ctrl+B)'}
             type="button"
-            aria-label={`Format text as bold. Shortcut: ${
-              IS_APPLE ? "⌘B" : "Ctrl+B"
-            }`}
+            aria-label={`Format text as bold. Shortcut: ${IS_APPLE ? '⌘B' : 'Ctrl+B'}`}
           >
             <i className="format bold" />
           </button>
           <button
             disabled={!isEditable}
             onClick={() => {
-              activeEditor.dispatchCommand(FORMAT_TEXT_COMMAND, "italic");
+              activeEditor.dispatchCommand(FORMAT_TEXT_COMMAND, 'italic');
             }}
-            className={"toolbar-item spaced " + (isItalic ? "active" : "")}
-            title={IS_APPLE ? "Italic (⌘I)" : "Italic (Ctrl+I)"}
+            className={'toolbar-item spaced ' + (isItalic ? 'active' : '')}
+            title={IS_APPLE ? 'Italic (⌘I)' : 'Italic (Ctrl+I)'}
             type="button"
-            aria-label={`Format text as italics. Shortcut: ${
-              IS_APPLE ? "⌘I" : "Ctrl+I"
-            }`}
+            aria-label={`Format text as italics. Shortcut: ${IS_APPLE ? '⌘I' : 'Ctrl+I'}`}
           >
             <i className="format italic" />
           </button>
           <button
             disabled={!isEditable}
             onClick={insertLink}
-            className={"toolbar-item spaced " + (isLink ? "active" : "")}
+            className={'toolbar-item spaced ' + (isLink ? 'active' : '')}
             aria-label="Insert link"
             title="Insert link"
             type="button"

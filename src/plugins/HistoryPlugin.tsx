@@ -7,9 +7,8 @@
  *
  */
 
-import type {EditorState, LexicalEditor, LexicalNode, NodeKey} from 'lexical';
-
-import {mergeRegister} from '@lexical/utils';
+import { mergeRegister } from '@lexical/utils';
+import type { EditorState, LexicalEditor, LexicalNode, NodeKey } from 'lexical';
 import {
   $isRangeSelection,
   $isRootNode,
@@ -50,7 +49,7 @@ type IntentionallyMarkedAsDirtyElement = boolean;
 function getDirtyNodes(
   editorState: EditorState,
   dirtyLeaves: Set<NodeKey>,
-  dirtyElements: Map<NodeKey, IntentionallyMarkedAsDirtyElement>,
+  dirtyElements: Map<NodeKey, IntentionallyMarkedAsDirtyElement>
 ): Array<LexicalNode> {
   const nodeMap = editorState._nodeMap;
   const nodes = [];
@@ -83,7 +82,7 @@ function getChangeType(
   nextEditorState: EditorState,
   dirtyLeavesSet: Set<NodeKey>,
   dirtyElementsSet: Map<NodeKey, IntentionallyMarkedAsDirtyElement>,
-  isComposing: boolean,
+  isComposing: boolean
 ): ChangeType {
   if (
     prevEditorState === null ||
@@ -108,11 +107,7 @@ function getChangeType(
     return OTHER;
   }
 
-  const dirtyNodes = getDirtyNodes(
-    nextEditorState,
-    dirtyLeavesSet,
-    dirtyElementsSet,
-  );
+  const dirtyNodes = getDirtyNodes(nextEditorState, dirtyLeavesSet, dirtyElementsSet);
 
   if (dirtyNodes.length === 0) {
     return OTHER;
@@ -191,7 +186,7 @@ function getChangeType(
 function isTextNodeUnchanged(
   key: NodeKey,
   prevEditorState: EditorState,
-  nextEditorState: EditorState,
+  nextEditorState: EditorState
 ): boolean {
   const prevNode = prevEditorState._nodeMap.get(key);
   const nextNode = nextEditorState._nodeMap.get(key);
@@ -224,14 +219,14 @@ function isTextNodeUnchanged(
 
 function createMergeActionGetter(
   editor: LexicalEditor,
-  delay: number,
+  delay: number
 ): (
   prevEditorState: null | EditorState,
   nextEditorState: EditorState,
   currentHistoryEntry: null | HistoryStateEntry,
   dirtyLeaves: Set<NodeKey>,
   dirtyElements: Map<NodeKey, IntentionallyMarkedAsDirtyElement>,
-  tags: Set<string>,
+  tags: Set<string>
 ) => MergeAction {
   let prevChangeTime = Date.now();
   let prevChangeType = OTHER;
@@ -242,7 +237,7 @@ function createMergeActionGetter(
     currentHistoryEntry,
     dirtyLeaves,
     dirtyElements,
-    tags,
+    tags
   ) => {
     const changeTime = Date.now();
 
@@ -259,15 +254,13 @@ function createMergeActionGetter(
       nextEditorState,
       dirtyLeaves,
       dirtyElements,
-      editor.isComposing(),
+      editor.isComposing()
     );
 
     const mergeAction = (() => {
-      const isSameEditor =
-        currentHistoryEntry === null || currentHistoryEntry.editor === editor;
+      const isSameEditor = currentHistoryEntry === null || currentHistoryEntry.editor === editor;
       const shouldPushHistory = tags.has('history-push');
-      const shouldMergeHistory =
-        !shouldPushHistory && isSameEditor && tags.has('history-merge');
+      const shouldMergeHistory = !shouldPushHistory && isSameEditor && tags.has('history-merge');
 
       if (shouldMergeHistory) {
         return HISTORY_MERGE;
@@ -302,10 +295,7 @@ function createMergeActionGetter(
       // due to some node transform reverting the change.
       if (dirtyLeaves.size === 1) {
         const dirtyLeafKey = Array.from(dirtyLeaves)[0];
-        if (
-          dirtyLeafKey &&
-          isTextNodeUnchanged(dirtyLeafKey, prevEditorState, nextEditorState)
-        ) {
+        if (dirtyLeafKey && isTextNodeUnchanged(dirtyLeafKey, prevEditorState, nextEditorState)) {
           return HISTORY_MERGE;
         }
       }
@@ -394,7 +384,7 @@ function clearHistory(historyState: HistoryState) {
 export function registerHistory(
   editor: LexicalEditor,
   historyState: HistoryState,
-  delay: number,
+  delay: number
 ): () => void {
   const getMergeAction = createMergeActionGetter(editor, delay);
 
@@ -426,7 +416,7 @@ export function registerHistory(
       current,
       dirtyLeaves,
       dirtyElements,
-      tags,
+      tags
     );
 
     if (mergeAction === HISTORY_PUSH) {
@@ -459,7 +449,7 @@ export function registerHistory(
         undo(editor, historyState);
         return true;
       },
-      COMMAND_PRIORITY_EDITOR,
+      COMMAND_PRIORITY_EDITOR
     ),
     editor.registerCommand(
       REDO_COMMAND,
@@ -467,7 +457,7 @@ export function registerHistory(
         redo(editor, historyState);
         return true;
       },
-      COMMAND_PRIORITY_EDITOR,
+      COMMAND_PRIORITY_EDITOR
     ),
     editor.registerCommand(
       CLEAR_EDITOR_COMMAND,
@@ -475,7 +465,7 @@ export function registerHistory(
         clearHistory(historyState);
         return false;
       },
-      COMMAND_PRIORITY_EDITOR,
+      COMMAND_PRIORITY_EDITOR
     ),
     editor.registerCommand(
       CLEAR_HISTORY_COMMAND,
@@ -485,9 +475,9 @@ export function registerHistory(
         editor.dispatchCommand(CAN_UNDO_COMMAND, false);
         return true;
       },
-      COMMAND_PRIORITY_EDITOR,
+      COMMAND_PRIORITY_EDITOR
     ),
-    editor.registerUpdateListener(applyChange),
+    editor.registerUpdateListener(applyChange)
   );
 
   const unregisterUpdateListener = editor.registerUpdateListener(applyChange);
