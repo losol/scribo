@@ -6,9 +6,9 @@
  *
  */
 import type { JSX } from 'react';
-import "./ContentEditable.css";
+import './ContentEditable.css';
 
-import { ContentEditable } from "@lexical/react/LexicalContentEditable";
+import { ContentEditable } from '@lexical/react/LexicalContentEditable';
 
 export default function LexicalContentEditable({
   className,
@@ -17,5 +17,5 @@ export default function LexicalContentEditable({
   className?: string;
   id?: string;
 }>): JSX.Element {
-  return <ContentEditable className={className || "ContentEditable__root"} id={id} />;
+  return <ContentEditable className={className || 'ContentEditable__root'} id={id} />;
 }

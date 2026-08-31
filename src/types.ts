@@ -1,6 +1,6 @@
-import type { ComponentType } from 'react';
 import type { Transformer } from '@lexical/markdown';
 import type { Klass, LexicalNode } from 'lexical';
+import type { ComponentType } from 'react';
 
 export interface ScriboToolbarButton {
   /** Unique key */

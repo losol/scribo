@@ -1,9 +1,9 @@
-import { $getSelection, $isRangeSelection, $createParagraphNode } from 'lexical';
 import { $findMatchingParent } from '@lexical/utils';
+import { $createParagraphNode, $getSelection, $isRangeSelection } from 'lexical';
 
 import type { ScriboPlugin } from '../../types';
-import { $createCalloutNode, CalloutNode } from './CalloutNode';
 import { CalloutPlugin } from './CalloutComponent';
+import { $createCalloutNode, CalloutNode } from './CalloutNode';
 import { CALLOUT_TRANSFORMER } from './CalloutTransformer';
 
 export const calloutPlugin: ScriboPlugin = {
@@ -23,8 +23,7 @@ export const calloutPlugin: ScriboPlugin = {
 
           const anchor = selection.anchor.getNode();
           const topLevel =
-            $findMatchingParent(anchor, (n) => n.getParent()?.getType() === 'root') ??
-            anchor;
+            $findMatchingParent(anchor, (n) => n.getParent()?.getType() === 'root') ?? anchor;
 
           const calloutNode = $createCalloutNode('NOTE');
           const p = $createParagraphNode();

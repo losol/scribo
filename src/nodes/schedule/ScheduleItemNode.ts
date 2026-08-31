@@ -1,12 +1,12 @@
 import {
   $applyNodeReplacement,
   DecoratorNode,
-  DOMConversionMap,
-  DOMExportOutput,
-  LexicalNode,
-  NodeKey,
-  SerializedLexicalNode,
-  Spread,
+  type DOMConversionMap,
+  type DOMExportOutput,
+  type LexicalNode,
+  type NodeKey,
+  type SerializedLexicalNode,
+  type Spread,
 } from 'lexical';
 import { createElement, type ReactElement } from 'react';
 
@@ -19,10 +19,7 @@ export interface ScheduleItemData {
   description?: string;
 }
 
-export type SerializedScheduleItemNode = Spread<
-  { data: ScheduleItemData },
-  SerializedLexicalNode
->;
+export type SerializedScheduleItemNode = Spread<{ data: ScheduleItemData }, SerializedLexicalNode>;
 
 export class ScheduleItemNode extends DecoratorNode<ReactElement> {
   __data: ScheduleItemData;
@@ -131,6 +128,8 @@ export function $createScheduleItemNode(data: ScheduleItemData): ScheduleItemNod
   return $applyNodeReplacement(new ScheduleItemNode(data));
 }
 
-export function $isScheduleItemNode(node: LexicalNode | null | undefined): node is ScheduleItemNode {
+export function $isScheduleItemNode(
+  node: LexicalNode | null | undefined
+): node is ScheduleItemNode {
   return node instanceof ScheduleItemNode;
 }

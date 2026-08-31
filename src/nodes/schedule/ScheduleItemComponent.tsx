@@ -1,13 +1,13 @@
 import './ScheduleItem.css';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { useLexicalNodeSelection } from '@lexical/react/useLexicalNodeSelection';
-import { $getNodeByKey, $createParagraphNode, NodeKey } from 'lexical';
+import { $createParagraphNode, $getNodeByKey, type NodeKey } from 'lexical';
 import { type DragEvent, useCallback, useEffect, useRef, useState } from 'react';
 
 import {
   $createScheduleItemNode,
   $isScheduleItemNode,
-  ScheduleItemData,
+  type ScheduleItemData,
 } from './ScheduleItemNode';
 
 interface ScheduleItemComponentProps {

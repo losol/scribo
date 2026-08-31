@@ -1,5 +1,5 @@
-import { $getSelection, $isRangeSelection } from 'lexical';
 import { $findMatchingParent } from '@lexical/utils';
+import { $getSelection, $isRangeSelection } from 'lexical';
 
 import type { ScriboPlugin } from '../../types';
 import { $createScheduleItemNode, ScheduleItemNode } from './ScheduleItemNode';
@@ -21,8 +21,7 @@ export const schedulePlugin: ScriboPlugin = {
 
           const anchor = selection.anchor.getNode();
           const topLevel =
-            $findMatchingParent(anchor, (n) => n.getParent()?.getType() === 'root') ??
-            anchor;
+            $findMatchingParent(anchor, (n) => n.getParent()?.getType() === 'root') ?? anchor;
 
           const node = $createScheduleItemNode({ time: '', title: '' });
           topLevel.insertAfter(node);
