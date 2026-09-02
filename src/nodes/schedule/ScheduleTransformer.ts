@@ -17,26 +17,21 @@ import {
 const SCHEDULE_ITEM_REGEX =
   /^-\s+\*\*(\d{1,2}[.:]\d{2}(?:\s*[–-]\s*\d{1,2}[.:]\d{2})?)\s*\*\*\s+(.+)$/;
 
-export function normalizeScheduleItemData(data: {
-  time: string;
-  title: string;
-  speaker?: string;
-  description?: string;
-}) {
+export function normalizeScheduleItemData(data: Partial<ScheduleItemData>): ScheduleItemData {
   return {
-    time: data.time.trim(),
-    title: data.title.trim(),
+    time: (data.time ?? '').trim(),
+    title: data.title ?? '',
     speaker: data.speaker?.trim() || undefined,
     description: data.description?.trim() || undefined,
   };
 }
 
-export function parseScheduleItemMarkdown(markdown: string) {
+export function parseScheduleItemMarkdown(markdown: string): ScheduleItemData | null {
   const match = markdown.match(SCHEDULE_ITEM_REGEX);
   if (!match) return null;
 
-  const time = (match[1] ?? '').replaceAll('.', ':').trim();
-  const rest = (match[2] ?? '').trim();
+  const time = (match[1] ?? '').replaceAll('.', ':');
+  const rest = match[2] ?? '';
   const parts = rest.split('|').map((s) => s.trim());
 
   return normalizeScheduleItemData({
@@ -66,13 +61,8 @@ export const SCHEDULE_ITEM_TRANSFORMER: ElementTransformer = {
   },
 
   replace: (parentNode, _children, match) => {
-    const parsed = parseScheduleItemMarkdown(match[0] ?? '');
-
     const node = $createScheduleItemNode(
-      parsed ?? {
-        time: ((match[1] ?? '').replaceAll('.', ':').trim() || '').trim(),
-        title: '',
-      }
+      parseScheduleItemMarkdown(match[0] ?? '') ?? { time: '', title: '' }
     );
 
     parentNode.replace(node);

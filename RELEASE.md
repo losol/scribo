@@ -11,7 +11,7 @@ This document explains how to configure the automated release workflow for `@eve
    ```bash
    # Option A: Manual (recommended for better changelog messages)
    pnpm changeset
-   
+
    # Option B: Auto-generate from commits (review and edit after)
    pnpm changeset:suggest
    ```
@@ -75,7 +75,7 @@ The workflow uses a GitHub environment for deployment protection (optional but r
 1. Go to your GitHub repository
 2. Navigate to **Settings** → **Environments**
 3. Click **New environment**
-4. Name: `scribo-npm`
+4. Name: `npm`
 5. (Optional) Add protection rules:
    - Required reviewers if you want manual approval
    - Deployment branches: Select "Selected branches" and add `main`
@@ -92,7 +92,6 @@ If you cannot use trusted publishing, you can fall back to traditional npm token
 3. Update the workflow to include `NODE_AUTH_TOKEN` environment variable in the publish step
 
 However, trusted publishing is strongly recommended for better security.
-
 
 ## Workflow Trigger
 
