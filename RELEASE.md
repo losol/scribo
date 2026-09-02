@@ -9,19 +9,16 @@ This document explains how to configure the automated release workflow for `@eve
 1. **Create changesets** for your changes:
 
    ```bash
-   # Option A: Manual (recommended for better changelog messages)
+   # Manual (recommended for better changelog messages)
    pnpm changeset
-
-   # Option B: Auto-generate from commits (review and edit after)
-   pnpm changeset:suggest
    ```
 
-   > **Tip**: `changeset:suggest` analyzes your git commits since the last release and automatically generates changeset files. Review the generated changesets and edit them for clarity if needed.
+   > **Tip**: Review the generated changeset and edit it for clarity if needed.
 
 2. **Version the package** when ready:
 
    ```bash
-   pnpm changeset:version
+   pnpm changeset version
    ```
 
 3. **Commit and push** the version bump:
@@ -65,7 +62,7 @@ Scribo uses **npm trusted publishing with OIDC** for secure, token-free publishi
    - **Organization or user**: `losol`
    - **Repository**: `eventuras`
    - **Workflow filename**: `scribo-release.yml` (include `.yml` extension)
-   - **Environment name**: `scribo-npm`
+   - **Environment name**: `npm`
 6. Click **Add trusted publisher**
 
 #### Set Up GitHub Environment
@@ -88,7 +85,7 @@ The workflow uses a GitHub environment for deployment protection (optional but r
 If you cannot use trusted publishing, you can fall back to traditional npm tokens:
 
 1. Create a granular access token on npmjs.com with write access to `@eventuras/scribo`
-2. Add it as `NODE_AUTH_TOKEN` secret in the `scribo-npm` environment
+2. Add it as `NODE_AUTH_TOKEN` secret in the `npm` environment
 3. Update the workflow to include `NODE_AUTH_TOKEN` environment variable in the publish step
 
 However, trusted publishing is strongly recommended for better security.
