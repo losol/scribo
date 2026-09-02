@@ -1,5 +1,13 @@
 # @eventuras/scribo
 
+## 0.10.7
+
+### Patch Changes
+
+- [#8](https://github.com/losol/scribo/pull/8) [`386a7d0`](https://github.com/losol/scribo/commit/386a7d084548f137df97ae80256a1d10e6b2b8ea) Thanks [@losolio](https://github.com/losolio)! - Fix schedule item handling for trailing whitespace in time values. The editor now trims time strings before storing them, exported markdown removes extra whitespace around the time, and legacy schedule entries with a space before the closing `**` are still parsed correctly.
+
+- [#9](https://github.com/losol/scribo/pull/9) [`5e015c5`](https://github.com/losol/scribo/commit/5e015c5c9bd6a1499c198ac2968cbe108abaa4b8) Thanks [@losolio](https://github.com/losolio)! - fix: trim spaces
+
 ## 0.10.6
 
 ### Patch Changes

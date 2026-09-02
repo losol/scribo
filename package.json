@@ -1,6 +1,6 @@
 {
   "name": "@eventuras/scribo",
-  "version": "0.10.6",
+  "version": "0.10.7",
   "description": "Markdown editor built on Lexical — WYSIWYG editing with markdown export",
   "license": "MIT",
   "homepage": "https://scribo.losol.no/",
