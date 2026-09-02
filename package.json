@@ -33,6 +33,7 @@
     "build:site": "vite build --config vite.config.site.ts",
     "dev": "vite",
     "lint": "biome check .",
+    "test": "vitest run",
     "format": "biome format --write .",
     "format:check": "biome format --check ."
   },

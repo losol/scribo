@@ -28,6 +28,8 @@ jobs:
 
       - run: pnpm lint
 
+      - run: pnpm test
+
       - run: pnpm build
 
       # The package publishes source with types from dist, so a passing build

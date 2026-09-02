@@ -52,12 +52,20 @@ export const ScheduleItemComponent = ({ nodeKey, data }: ScheduleItemComponentPr
   );
 
   const handleChange = (field: keyof ScheduleItemData, value: string) => {
-    const updated = { ...localData, [field]: value || undefined };
-    if (field === 'time' || field === 'title') {
-      updated[field] = value;
-    }
-    setLocalData(updated);
-    updateNode(updated);
+    const nextRaw: ScheduleItemData = {
+      ...localData,
+      time: field === 'time' ? value : localData.time,
+      title: field === 'title' ? value : localData.title,
+      speaker: field === 'speaker' ? value || undefined : localData.speaker,
+      description: field === 'description' ? value || undefined : localData.description,
+    };
+    const persisted: ScheduleItemData = {
+      ...nextRaw,
+      time: nextRaw.time.trim(),
+    };
+
+    setLocalData(nextRaw);
+    updateNode(persisted);
   };
 
   const insertAfter = () => {
