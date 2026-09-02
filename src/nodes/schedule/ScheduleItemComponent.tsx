@@ -52,24 +52,20 @@ export const ScheduleItemComponent = ({ nodeKey, data }: ScheduleItemComponentPr
   );
 
   const handleChange = (field: keyof ScheduleItemData, value: string) => {
-    const nextLocalData = { ...localData, [field]: value };
-
-    const nextStoredData: ScheduleItemData = {
-      ...nextLocalData,
-      time: field === 'time' ? value.trim() : (localData.time ?? '').trim(),
+    const nextRaw: ScheduleItemData = {
+      ...localData,
+      time: field === 'time' ? value : localData.time,
       title: field === 'title' ? value : localData.title,
-      speaker:
-        field === 'speaker'
-          ? value.trim() || undefined
-          : (localData.speaker ?? '').trim() || undefined,
-      description:
-        field === 'description'
-          ? value.trim() || undefined
-          : (localData.description ?? '').trim() || undefined,
+      speaker: field === 'speaker' ? value || undefined : localData.speaker,
+      description: field === 'description' ? value || undefined : localData.description,
+    };
+    const persisted: ScheduleItemData = {
+      ...nextRaw,
+      time: nextRaw.time.trim(),
     };
 
-    setLocalData(nextLocalData);
-    updateNode(nextStoredData);
+    setLocalData(nextRaw);
+    updateNode(persisted);
   };
 
   const insertAfter = () => {
