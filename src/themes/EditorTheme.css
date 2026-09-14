@@ -41,7 +41,8 @@
   margin: 0;
 }
 
-[data-theme="dark"] .EditorTheme__h1 {
+[data-theme="dark"] .EditorTheme__h1,
+[data-color-scheme="dark"] .EditorTheme__h1 {
   color: #ffffff;
 }
 
@@ -54,7 +55,8 @@
   margin: 0;
 }
 
-[data-theme="dark"] .EditorTheme__h2 {
+[data-theme="dark"] .EditorTheme__h2,
+[data-color-scheme="dark"] .EditorTheme__h2 {
   color: #ffffff;
 }
 
@@ -67,7 +69,8 @@
   margin: 0;
 }
 
-[data-theme="dark"] .EditorTheme__h3 {
+[data-theme="dark"] .EditorTheme__h3,
+[data-color-scheme="dark"] .EditorTheme__h3 {
   color: #ffffff;
 }
 
@@ -80,7 +83,8 @@
   margin: 0;
 }
 
-[data-theme="dark"] .EditorTheme__h4 {
+[data-theme="dark"] .EditorTheme__h4,
+[data-color-scheme="dark"] .EditorTheme__h4 {
   color: #ffffff;
 }
 
