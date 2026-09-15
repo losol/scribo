@@ -1,0 +1,86 @@
+{
+  "name": "@eventuras/scribo",
+  "version": "0.10.7",
+  "description": "Markdown editor built on Lexical — WYSIWYG editing with markdown export",
+  "license": "MIT",
+  "homepage": "https://scribo.losol.no/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/losol/scribo.git"
+  },
+  "bugs": {
+    "url": "https://github.com/losol/scribo/issues"
+  },
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/main.d.ts",
+      "default": "./src/main.tsx"
+    },
+    "./plugins/schedule": {
+      "types": "./dist/nodes/schedule/index.d.ts",
+      "default": "./src/nodes/schedule/index.ts"
+    },
+    "./plugins/callout": {
+      "types": "./dist/nodes/callout/index.d.ts",
+      "default": "./src/nodes/callout/index.ts"
+    },
+    "./style.css": "./dist/scribo.css"
+  },
+  "main": "src/main.tsx",
+  "scripts": {
+    "build": "vite build",
+    "build:site": "vite build --config vite.config.site.ts",
+    "dev": "vite",
+    "lint": "biome check .",
+    "test": "vitest run",
+    "format": "biome format --write .",
+    "format:check": "biome format --check ."
+  },
+  "overrides": {
+    "vite": {
+      "rollup": "npm:@rollup/wasm-node"
+    }
+  },
+  "dependencies": {
+    "@lexical/code": "0.50.0",
+    "@lexical/hashtag": "0.50.0",
+    "@lexical/link": "0.50.0",
+    "@lexical/list": "0.50.0",
+    "@lexical/mark": "0.50.0",
+    "@lexical/markdown": "0.50.0",
+    "@lexical/overflow": "0.50.0",
+    "@lexical/react": "^0.50.0",
+    "@lexical/rich-text": "0.50.0",
+    "@lexical/selection": "0.50.0",
+    "@lexical/table": "0.50.0",
+    "@lexical/utils": "0.50.0",
+    "lexical": "0.50.0",
+    "prismjs": "^1.30.0",
+    "yjs": "^13.6.32"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.5.13",
+    "@changesets/changelog-github": "^1.0.1",
+    "@changesets/cli": "^3.0.2",
+    "@eventuras/typescript-config": "^1.0.0",
+    "@eventuras/vite-config": "^0.3.1",
+    "@testing-library/react": "^16.3.2",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@typescript/typescript6": "^6.0.2",
+    "@vitejs/plugin-react": "^6.0.5",
+    "lightningcss": "^1.33.0",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.0",
+    "vitest": "^5.0.0"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "packageManager": "pnpm@11.8.0",
+  "engines": {
+    "node": ">=24.0.0 <25.0.0"
+  }
+}

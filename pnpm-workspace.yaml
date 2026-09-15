@@ -1,5 +1,5 @@
-# Single-package repo; the file exists so pnpm settings live outside package.json
-# (pnpm 11 no longer reads the `pnpm` field there).
+packages:
+  - 'packages/*'
 
 # Allow-list of packages whose install scripts may run.
 allowBuilds:

@@ -35,6 +35,7 @@ jobs:
       # The package publishes source with types from dist, so a passing build
       # is not proof the tarball is complete — check what npm would ship.
       - name: Verify the publishable tarball
+        working-directory: packages/scribo
         run: |
           set -euo pipefail
           npm pack --dry-run 2>&1 | tee /tmp/pack.log
