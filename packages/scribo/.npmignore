@@ -1,0 +1,18 @@
+# Demo application entry and assets
+public/
+src/App.tsx
+src/App.css
+src/index.tsx
+src/vite-env.d.ts
+
+# Test files
+src/**/*.test.ts
+src/**/*.test.tsx
+
+# Build tooling (not needed by consumers)
+vite.config.ts
+vite.config.site.ts
+tsconfig.node.json
+
+# Misc
+*.tgz
