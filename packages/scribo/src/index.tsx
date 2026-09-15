@@ -4,7 +4,7 @@ import { App } from './App';
 import './App.css';
 import './MarkdownEditor.css';
 
-import readmeRaw from '../README.md?raw';
+import readmeRaw from '../../../README.md?raw';
 
 const rootElement = document.getElementById('root');
 

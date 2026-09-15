@@ -6,7 +6,9 @@ settings:
 
 importers:
 
-  .:
+  .: {}
+
+  packages/scribo:
     dependencies:
       '@lexical/code':
         specifier: 0.50.0
