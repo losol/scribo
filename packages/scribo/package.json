@@ -62,7 +62,7 @@
   "devDependencies": {
     "@biomejs/biome": "^2.5.13",
     "@changesets/changelog-github": "^1.0.1",
-    "@changesets/cli": "^3.0.2",
+    "@changesets/cli": "^3.0.3",
     "@eventuras/typescript-config": "^1.0.0",
     "@eventuras/vite-config": "^0.3.1",
     "@testing-library/react": "^16.3.2",
@@ -73,7 +73,7 @@
     "lightningcss": "^1.33.0",
     "typescript": "^7.0.2",
     "vite": "^8.3.0",
-    "vitest": "^5.0.0"
+    "vitest": "^5.0.1"
   },
   "peerDependencies": {
     "react": "^19.0.0",
