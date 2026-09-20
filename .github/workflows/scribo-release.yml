@@ -41,13 +41,15 @@ jobs:
       - name: Build package
         run: pnpm build
 
+      # Publishing authenticates with npm trusted publishing (OIDC), not a token.
+      # The trusted publisher registered on npmjs.com must name this repository and
+      # this workflow file, or the token exchange 404s and the publish is anonymous.
       - name: Create release PR or publish
         id: changesets
-        uses: changesets/action@v1
+        uses: changesets/action@v2
         with:
-          commit: "chore: version packages"
-          title: "chore: version packages"
-          version: pnpm changeset version
-          publish: pnpm publish -r --access public --provenance
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "chore: version packages"
+          pr-title: "chore: version packages"
+          version-script: pnpm changeset version
+          publish-script: pnpm publish -r --access public --provenance
