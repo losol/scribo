@@ -41,6 +41,18 @@ jobs:
           npm pack --dry-run 2>&1 | tee /tmp/pack.log
           for f in src/main.tsx dist/main.d.ts dist/scribo.css \
                    src/nodes/schedule/index.ts dist/nodes/schedule/index.d.ts \
-                   src/nodes/callout/index.ts dist/nodes/callout/index.d.ts; do
+                   src/nodes/callout/index.ts dist/nodes/callout/index.d.ts \
+                   README.md LICENSE.md CHANGELOG.md; do
             grep -q " $f\$" /tmp/pack.log || { echo "::error::$f missing from the tarball"; exit 1; }
+          done
+
+      # README and LICENSE exist twice: the copy in the repository root is what
+      # GitHub renders, the copy in the package is what npm renders. Neither
+      # tool reads the other's copy, so both have to be kept in step.
+      - name: Verify the duplicated README and LICENSE match
+        run: |
+          set -euo pipefail
+          for f in README.md LICENSE.md; do
+            cmp -s "$f" "packages/scribo/$f" ||
+              { echo "::error::$f and packages/scribo/$f have drifted apart"; exit 1; }
           done

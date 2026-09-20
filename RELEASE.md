@@ -1,98 +1,102 @@
-# Release Instructions for @eventuras/scribo
+# Releasing @eventuras/scribo
 
-This document explains how to configure the automated release workflow for `@eventuras/scribo`.
+`@eventuras/scribo` is released with [Changesets](https://github.com/changesets/changesets)
+and published to npm from GitHub Actions. This document covers the everyday flow
+and the one-time setup that lives outside this repository.
 
-## Release Process
+## Release process
 
-### Standard Release
+Releases are driven by changeset files. Do not edit `version` in
+`packages/scribo/package.json` by hand.
 
-1. **Create changesets** for your changes:
+1. **Describe the change** on your feature branch:
 
    ```bash
-   # Manual (recommended for better changelog messages)
    pnpm changeset
    ```
 
-   > **Tip**: Review the generated changeset and edit it for clarity if needed.
+   Pick the bump level and write the entry for whoever reads the changelog
+   later. Review the generated file in `.changeset/` and edit it for clarity —
+   it is copied verbatim into the changelog.
 
-2. **Version the package** when ready:
+2. **Merge your pull request** into `main` with the changeset file included.
 
-   ```bash
-   pnpm changeset version
-   ```
+3. **Merge the version pull request.** The release workflow opens, or updates, a
+   `chore: version packages` pull request that applies every pending changeset:
+   it bumps `packages/scribo/package.json`, rewrites
+   `packages/scribo/CHANGELOG.md`, and deletes the changesets it consumed.
 
-3. **Commit and push** the version bump:
+4. **The workflow publishes** once that pull request lands on `main`. It builds
+   the package, publishes to npm with provenance, pushes the git tag
+   `@eventuras/scribo@x.y.z`, and creates the matching GitHub release from the
+   changelog entry.
 
-   ```bash
-   git add .
-   git commit -m "chore(scribo): release v0.x.x"
-   git push origin main
-   ```
+No manual `changeset version`, and no manual tagging.
 
-4. **Automated workflow** will:
-   - ✅ Build the package
-   - ✅ Publish to npm with provenance
-   - ✅ Create Git tag `@eventuras/scribo@x.x.x`
-   - ✅ Create GitHub Release with changelog
+## What the package ships
 
-### Manual Release
+npm serves `packages/scribo/README.md` on the package page and reads the license
+from `packages/scribo/LICENSE.md`. Both files also exist in the repository root,
+which is where GitHub reads them instead. **Neither tool looks at the other's
+copy**, so the two have to be updated together; CI fails the build if they drift
+apart, or if the tarball is missing the README, license or changelog.
 
-If the automated workflow fails or you need to publish manually:
+`CHANGELOG.md` lives only in `packages/scribo/`, because that is where Changesets
+writes it.
+
+## Setup outside this repository
+
+### npm trusted publishing
+
+Publishing authenticates over OIDC, so no npm token exists anywhere in this
+repository. The trusted publisher registered on npmjs.com has to match this
+repository exactly. When it does not, the OIDC token exchange returns 404,
+`pnpm publish` falls back to an anonymous request, and npm rejects it with
+`E404`.
+
+Configure it on [npmjs.com](https://www.npmjs.com) under `@eventuras/scribo` →
+Settings → Trusted Publisher → GitHub Actions:
+
+| Field                | Value               |
+| -------------------- | ------------------- |
+| Organization or user | `losol`             |
+| Repository           | `scribo`            |
+| Workflow filename    | `scribo-release.yml` |
+| Environment name     | `npm`               |
+
+> The environment name has to match the `environment:` key on the release job.
+> Leave it blank on npmjs.com only if you also drop that key from the workflow.
+
+### GitHub environment
+
+The release job runs in a GitHub environment named `npm`
+(Settings → Environments). Trusted publishing needs no secrets there — the
+environment exists so you can add protection rules, such as requiring a reviewer
+or restricting deployments to `main`.
+
+### Fallback: token-based publishing
+
+If trusted publishing is not an option, create a granular access token with write
+access to `@eventuras/scribo`, add it as a `NODE_AUTH_TOKEN` secret in the `npm`
+environment, and pass it to the publish step in the workflow. Prefer trusted
+publishing: it needs no long-lived credential and produces provenance on its own.
+
+## Publishing by hand
+
+Only when the workflow is broken and a release cannot wait:
 
 ```bash
-cd libs/scribo
+cd packages/scribo
 pnpm build
 npm login --scope @eventuras --auth-type web
 npm publish --access public
 ```
 
-## Release Setup
+A manual publish gets no provenance attestation, and creates neither a git tag
+nor a GitHub release, so tag the commit yourself afterwards.
 
-### NPM Trusted Publishing Setup (Recommended)
+## Workflow trigger
 
-Scribo uses **npm trusted publishing with OIDC** for secure, token-free publishing.
-
-#### Configure Trusted Publisher on npmjs.com
-
-1. Log in to [npmjs.com](https://www.npmjs.com)
-2. Navigate to `@eventuras/scribo` package settings
-3. Find **Trusted Publisher** section
-4. Click **GitHub Actions**
-5. Configure:
-   - **Organization or user**: `losol`
-   - **Repository**: `eventuras`
-   - **Workflow filename**: `scribo-release.yml` (include `.yml` extension)
-   - **Environment name**: `npm`
-6. Click **Add trusted publisher**
-
-#### Set Up GitHub Environment
-
-The workflow uses a GitHub environment for deployment protection (optional but recommended):
-
-1. Go to your GitHub repository
-2. Navigate to **Settings** → **Environments**
-3. Click **New environment**
-4. Name: `npm`
-5. (Optional) Add protection rules:
-   - Required reviewers if you want manual approval
-   - Deployment branches: Select "Selected branches" and add `main`
-6. Click **Create environment**
-
-> **Note**: With trusted publishing, you don't need to add any secrets to this environment. The workflow uses OIDC authentication automatically.
-
-### Legacy: Token-Based Publishing (Not Recommended)
-
-If you cannot use trusted publishing, you can fall back to traditional npm tokens:
-
-1. Create a granular access token on npmjs.com with write access to `@eventuras/scribo`
-2. Add it as `NODE_AUTH_TOKEN` secret in the `npm` environment
-3. Update the workflow to include `NODE_AUTH_TOKEN` environment variable in the publish step
-
-However, trusted publishing is strongly recommended for better security.
-
-## Workflow Trigger
-
-The release workflow (`.github/workflows/scribo-release.yml`) triggers automatically when:
-
-- Changes are pushed to the `main` branch
-- The file `libs/scribo/package.json` is modified
+`.github/workflows/scribo-release.yml` runs on every push to `main` and decides
+what to do on its own: pending changesets produce a version pull request, and a
+version that is ahead of npm produces a publish.
