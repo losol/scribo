@@ -64,12 +64,12 @@ Settings → Trusted Publisher → GitHub Actions:
 | Workflow filename    | `scribo-release.yml` |
 | Environment name     | `npm`               |
 
-> The environment name has to match the `environment:` key on the release job.
+> The environment name has to match the `environment:` key on the `publish` job.
 > Leave it blank on npmjs.com only if you also drop that key from the workflow.
 
 ### GitHub environment
 
-The release job runs in a GitHub environment named `npm`
+The `publish` job runs in a GitHub environment named `npm`
 (Settings → Environments). Trusted publishing needs no secrets there — the
 environment exists so you can add protection rules, such as requiring a reviewer
 or restricting deployments to `main`.
@@ -78,7 +78,7 @@ or restricting deployments to `main`.
 
 If trusted publishing is not an option, create a granular access token with write
 access to `@eventuras/scribo`, add it as a `NODE_AUTH_TOKEN` secret in the `npm`
-environment, and pass it to the publish step in the workflow. Prefer trusted
+environment, and pass it to the `publish` job in the workflow. Prefer trusted
 publishing: it needs no long-lived credential and produces provenance on its own.
 
 ## Publishing by hand
@@ -100,3 +100,10 @@ nor a GitHub release, so tag the commit yourself afterwards.
 `.github/workflows/scribo-release.yml` runs on every push to `main` and decides
 what to do on its own: pending changesets produce a version pull request, and a
 version that is ahead of npm produces a publish.
+
+It follows the [trusted publishing setup](https://changesets.dev/guide/automating#trusted-publishing)
+from the Changesets docs. A `select-mode` job picks one of two paths: `version`
+opens the version pull request, or `pack` builds and packs the tarballs that
+`publish` then uploads. Only `publish` can mint the npm OIDC token, and it never
+builds or runs dependency install scripts — keep it that way when editing the
+workflow.
