@@ -5,25 +5,27 @@ on:
     branches:
       - main
 
+# Nothing is granted by default; every job declares only what it needs.
+permissions: {}
+
+# Queue runs instead of cancelling them, so a publish is never cut off halfway.
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
-permissions:
-  contents: write
-  id-token: write
-  pull-requests: write
 
 jobs:
-  release:
-    name: Publish package
+  select-mode:
+    name: Select mode
     runs-on: ubuntu-latest
-    environment: npm
+    outputs:
+      mode: ${{ steps.select-mode.outputs.mode }}
+      publish-plan-artifact-id: ${{ steps.select-mode.outputs.publish-plan-artifact-id }}
+    permissions:
+      contents: read
     steps:
       - name: Check out repository
         uses: actions/checkout@v7
         with:
-          fetch-depth: 0
+          persist-credentials: false
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v6
@@ -32,8 +34,74 @@ jobs:
         uses: actions/setup-node@v7
         with:
           node-version: 24
-          cache: pnpm
-          registry-url: "https://registry.npmjs.org"
+          package-manager-cache: false
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Select Changesets mode
+        id: select-mode
+        uses: changesets/action/select-mode@v2
+
+  version:
+    name: Open version pull request
+    if: needs.select-mode.outputs.mode == 'version'
+    needs: select-mode
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+        with:
+          # @changesets/changelog-github looks up the commit that added each
+          # changeset, so the changelog can link to it.
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          package-manager-cache: false
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Version packages
+        uses: changesets/action/version@v2
+        with:
+          script: pnpm changeset version
+          commit-message: "chore: version packages"
+          pr-title: "chore: version packages"
+
+  pack:
+    name: Build and pack
+    if: needs.select-mode.outputs.mode == 'publish'
+    needs: select-mode
+    runs-on: ubuntu-latest
+    outputs:
+      pack-dir-artifact-id: ${{ steps.pack.outputs.pack-dir-artifact-id }}
+    permissions:
+      contents: read
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          package-manager-cache: false
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -41,15 +109,46 @@ jobs:
       - name: Build package
         run: pnpm build
 
-      # Publishing authenticates with npm trusted publishing (OIDC), not a token.
-      # The trusted publisher registered on npmjs.com must name this repository and
-      # this workflow file, or the token exchange 404s and the publish is anonymous.
-      - name: Create release PR or publish
-        id: changesets
-        uses: changesets/action@v2
+      - name: Pack package
+        id: pack
+        uses: changesets/action/pack@v2
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: "chore: version packages"
-          pr-title: "chore: version packages"
-          version-script: pnpm changeset version
-          publish-script: pnpm publish -r --access public --provenance
+          publish-plan-artifact-id: ${{ needs.select-mode.outputs.publish-plan-artifact-id }}
+
+  # Publishing authenticates with npm trusted publishing (OIDC), not a token.
+  # The trusted publisher registered on npmjs.com must name this repository,
+  # this workflow file and the `npm` environment, or the token exchange 404s
+  # and the publish is anonymous. This is the only job that can mint that
+  # token, and it never builds: it publishes the tarballs the pack job made.
+  publish:
+    name: Publish to npm
+    needs: pack
+    runs-on: ubuntu-latest
+    environment: npm
+    permissions:
+      contents: write
+      id-token: write
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          package-manager-cache: false
+
+      # Publishing needs only the Changesets CLI, which is plain JavaScript, so
+      # no dependency's install script gets to run while the token is mintable.
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile --ignore-scripts
+
+      - name: Publish package
+        uses: changesets/action/publish@v2
+        with:
+          pack-dir-artifact-id: ${{ needs.pack.outputs.pack-dir-artifact-id }}
