@@ -60,9 +60,9 @@
     "yjs": "^13.6.32"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.5.14",
-    "@eventuras/typescript-config": "^1.0.0",
-    "@eventuras/vite-config": "^0.3.1",
+    "@biomejs/biome": "^2.5.15",
+    "@eventuras/typescript-config": "^1.1.1",
+    "@eventuras/vite-config": "^0.4.0",
     "@testing-library/react": "^16.3.2",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
@@ -70,8 +70,8 @@
     "@vitejs/plugin-react": "^6.0.5",
     "lightningcss": "^1.33.0",
     "typescript": "^7.0.2",
-    "vite": "^8.3.0",
-    "vitest": "^5.0.1"
+    "vite": "^8.3.2",
+    "vitest": "^5.0.3"
   },
   "peerDependencies": {
     "react": "^19.0.0",
